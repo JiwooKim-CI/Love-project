@@ -41,8 +41,8 @@ library(mclust)
 # 2) Load & clean data
 # -------------------------------
 dat <- read_xls("love_may.xls")
-#dat <- dat_orginal |>
- # filter(Progress>=70)
+dat <- dat_orginal |>
+  filter(Progress>=70)
 dat[4:186] <- lapply(dat[4:186], function(x) as.numeric(gsub("[^0-9]", "", x)))
 
 names(dat) <- gsub("-", "", names(dat))
