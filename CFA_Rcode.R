@@ -13,7 +13,6 @@
 # ------------------------------------------------------------
 # -------------------------------
 # 1) Load packages
-#    - Data handling, I/O, psychometrics, SEM, plotting, LPA, imputation
 # -------------------------------
 library(dplyr)
 library(tidyr)
@@ -40,7 +39,6 @@ library(mclust)
 
 # -------------------------------
 # 2) Load & clean data
-#    - Read Excel, coerce numeric, clean names
 # -------------------------------
 dat <- read_xls("love_may.xls")
 #dat <- dat_orginal |>
@@ -57,7 +55,7 @@ names(dat) <- gsub("-", "", names(dat))
 ###Information used for imputation
 Q_vars <-c("Q267", "Q265", "Q268", "Q275") ## demographic information
 
-abc_vars <- grep("^[abcd][0-9]+$", names(dat), value = TRUE) ## questionnaires
+abc_vars <- grep("^[abcd][0-9]+$", names(dat), value = TRUE) ## questionnaires (Sternberg's love theory and ATTELS questions)
 
 
 target_vars <- c(Q_vars, abc_vars)
