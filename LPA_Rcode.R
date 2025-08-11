@@ -23,17 +23,8 @@ library(tikzDevice)
 library(emmeans)
 
 # -------------------------------
-# 2) Data wrangling
-#    - Load raw data, filter for completeness, coerce to numeric, clean names
+# 2) Data wrangling-use the same data from CFA imputation
 # -------------------------------
-## Data wrangling
-### Load data
-dat <- read_xls("love_may.xls")
-
-dat[4:186] <- lapply(dat[4:186], function(x) as.numeric(gsub("[^0-9]", "", x))) ## Recode the cell as numeric number
-
-# Normalize variable names (remove hyphens)
-names(dat) <- gsub("-", "", names(dat))
 
 # -------------------------------
 # 3) Sternberg's Love Theory (current)
@@ -43,10 +34,6 @@ names(dat) <- gsub("-", "", names(dat))
 love_tra <- dat[, grepl("^a", names(dat))]
 love_tra <- love_tra[,1:30]
 
-set.seed(123)
-love_tra_imputed <- missForest(as.data.frame(love_tra[,1:30]))$ximp
-love_tra_imputed <- as.data.frame(love_tra_imputed)
-
 love_tra$id <- dat$id
 
 # -------------------------------
@@ -54,14 +41,12 @@ love_tra$id <- dat$id
 #    - Select b1~b6 item sets, impute, compute subscale sums, keep ID
 # -------------------------------
 ### Generate dataset - ATTEL (current relationship)
-love_new <- dat[,grep(c("^b1(10|[1-9])$"), names(dat), value = TRUE)]
-love_new <- cbind(love_new,dat[,grep(c("^b2(10|[1-9])$"), names(dat), value = TRUE)])
-love_new <- cbind(love_new,dat[,grep(c("^b3(10|[1-9])$"), names(dat), value = TRUE)])
-love_new <- cbind(love_new,dat[,grep(c("^b4(10|[1-9])$"), names(dat), value = TRUE)])
-love_new <- cbind(love_new,dat[,grep(c("^b5(10|[1-9])$"), names(dat), value = TRUE)])
-love_new <- cbind(love_new,dat[,grep(c("^b6(10|[1-9])$"), names(dat), value = TRUE)])
-
-love_new_imputed <- missForest(as.data.frame(love_new[,1:60]))$ximp ## missing data imputation
+love_new_imputed <- dat[,grep(c("^b1(10|[1-9])$"), names(dat), value = TRUE)]
+love_new_imputed <- cbind(love_new_imputed,dat[,grep(c("^b2(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_imputed <- cbind(love_new_imputed,dat[,grep(c("^b3(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_imputed <- cbind(love_new_imputed,dat[,grep(c("^b4(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_imputed <- cbind(love_new_imputed,dat[,grep(c("^b5(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_imputed <- cbind(love_new_imputed,dat[,grep(c("^b6(10|[1-9])$"), names(dat), value = TRUE)])
 
 love_new_merge <- data.frame(
   b1_sum = rowSums(love_new_imputed[, grep("^b1(10|[1-9])$", 
@@ -91,14 +76,13 @@ love_new_merge$id <- dat$id
 #    - Select d1~d6 item sets, impute, compute subscale sums, keep ID
 # -------------------------------
 ### Generate dataset - ATTEL (ideal relationship)
-love_new_2 <- dat[,grep(c("^d1(10|[1-9])$"), names(dat), value = TRUE)]
-love_new_2 <- cbind(love_new_2,dat[,grep(c("^d2(10|[1-9])$"), names(dat), value = TRUE)])
-love_new_2 <- cbind(love_new_2,dat[,grep(c("^d3(10|[1-9])$"), names(dat), value = TRUE)])
-love_new_2 <- cbind(love_new_2,dat[,grep(c("^d4(10|[1-9])$"), names(dat), value = TRUE)])
-love_new_2 <- cbind(love_new_2,dat[,grep(c("^d5(10|[1-9])$"), names(dat), value = TRUE)])
-love_new_2 <- cbind(love_new_2,dat[,grep(c("^d6(10|[1-9])$"), names(dat), value = TRUE)])
-love_new_2$id <- dat$id
-love_new_2_imputed <- missForest(as.data.frame(love_new_2[,1:60]))$ximp ## missing data imputation
+love_new_2_imputed <- dat[,grep(c("^d1(10|[1-9])$"), names(dat), value = TRUE)]
+love_new_2_imputed <- cbind(love_new_2_imputed,dat[,grep(c("^d2(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_2_imputed <- cbind(love_new_2_imputed,dat[,grep(c("^d3(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_2_imputed <- cbind(love_new_2_imputed,dat[,grep(c("^d4(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_2_imputed <- cbind(love_new_2_imputed,dat[,grep(c("^d5(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_2_imputed <- cbind(love_new_2_imputed,dat[,grep(c("^d6(10|[1-9])$"), names(dat), value = TRUE)])
+love_new_2_imputed$id <- dat$id
 
 love_new_ideal <- data.frame(
   d1_sum = rowSums(love_new_2_imputed[, grep("^d1(10|[1-9])$", 
@@ -185,7 +169,6 @@ dev.off()
 
 # -------------------------------
 # 8) Satisfaction models (Sternberg class)
-#    - Linear models and emmeans by class
 # -------------------------------
 dat$class_tra <- as.factor(love_tra_merge$class)
 
@@ -212,7 +195,7 @@ dat$class_tra_merge <- factor(love_tra_merge$class,
                               levels = c(2, 4, 3, 1),  
                               labels = c("Very High", "Upper Moderate", "Lower Moderate", "Very Low"))
 
-library(emmeans)
+
 #relationship
 model_rel <- lm(Q276 ~ class_tra_merge, data = dat)
 emmeans(model_rel, ~ class_tra_merge) |> summary() 
