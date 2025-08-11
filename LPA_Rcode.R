@@ -1,16 +1,6 @@
-# ============================================================
-# Project: Love Profiles & LPA Analyses
-# File: love_analysis_commented.R
-# Purpose: Clean, GitHub-ready script with explanatory comments.
-# Notes:
-#   - Original code is preserved EXACTLY (no edits to code lines).
-#   - Only comments and section headers have been added for clarity.
-#   - Outputs (e.g., tikz, docx) write to the working directory.
-# ============================================================
 
 # -------------------------------
 # 1) Load packages
-#    - Data handling, SEM tools, plotting, LPA, imputation, LaTeX export
 # -------------------------------
 ## Load packages
 library(dplyr)
@@ -48,7 +38,6 @@ names(dat) <- gsub("-", "", names(dat))
 
 # -------------------------------
 # 3) Sternberg's Love Theory (current)
-#    - Select a-items, impute with missForest, keep ID
 # -------------------------------
 ### Generate dataset - Sternberg's love theory (current relationship)
 
