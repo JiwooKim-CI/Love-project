@@ -28,9 +28,8 @@ library(emmeans)
 # -------------------------------
 ## Data wrangling
 ### Load data
-dat_orginal <- read_xls("love_may.xls")
-dat <- dat_orginal |>
-  filter(Progress>=70) ## Include rows with not less than 70% of whole questions are answered
+dat <- read_xls("love_may.xls")
+
 dat[4:186] <- lapply(dat[4:186], function(x) as.numeric(gsub("[^0-9]", "", x))) ## Recode the cell as numeric number
 
 # Normalize variable names (remove hyphens)
