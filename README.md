@@ -48,7 +48,7 @@ This repo includes replication files for the CFA and LPA analysis in An Augmente
   - `1`: Intimacy (e.g., `a1-1`, `b1-3`)  
   - `2`: Commitment  
   - `3`: Passion  
-
+- The second digit after the hyphen refers to the item number within the same subscale.
 **ATTEL scale items**  
 - Variables starting with `c` or `d`  
   - `c`: Current relationship  
@@ -60,9 +60,8 @@ This repo includes replication files for the CFA and LPA analysis in An Augmente
   - `4`: Freedom  
   - `5`: Lack of control  
   - `6`: Control  
-
+- The second digit after the hyphen refers to the item number within the same subscale.
 **Single-item relationship evaluations**  
-- `Q1`: How happy are you in your relationship with your partner (or a past relationship if you are not currently in one)?  
 - `Q276`: How satisfied are (or were) you with your relationship with your partner?  
 - `Q277`: How satisfied are (or were) you with your partner in your relationship?  
 
