@@ -97,4 +97,4 @@ This repo includes replication files for the CFA and LPA analysis in An Augmente
 - Missing values were imputed using the `missForest` package in R.
 
 ## Reproducibility
-The analysis was conducted using R version 4.4.1. 
+The analysis was conducted using R version 4.4.1. The file systemsession.txt contains the R session information, including the R version and all package versions used in the analysis, to ensure reproducibility.
