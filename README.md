@@ -80,13 +80,7 @@ This repo includes replication files for the CFA and LPA analysis in An Augmente
 ### Demographic and relationship background variables
 - `Q265`: Age (numeric)  
 - `Q267`: Gender (Male / Female / Other / Prefer not to answer)  
-- `Q268`: Currently in a relationship? (Yes/No)  
-- `Q269`: Average duration of relationships  
-- `Q270`: Duration of longest relationship  
-- `Q271`: Duration of shortest relationship  
-- `Q272`: Number of relationships  
-- `Q273`: Participant’s definition of “having a relationship” (open-ended)  
-- `Q274`: Age at first relationship  
+- `Q268`: Currently in a relationship? (Yes/No) 
 - `Q275`: Ethnicity  
   - Asian  
   - Asian American  
