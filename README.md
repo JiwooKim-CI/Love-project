@@ -48,6 +48,7 @@ This repo includes replication files for the CFA and LPA analysis in An Augmente
   - `2`: Commitment  
   - `3`: Passion  
 - The second digit after the hyphen refers to the item number within the same subscale.
+  
 **ATTEL scale items**  
 - Variables starting with `c` or `d`  
   - `c`: Current relationship  
