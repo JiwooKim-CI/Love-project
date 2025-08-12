@@ -29,7 +29,6 @@ This repo includes replication files for the CFA and LPA analysis in An Augmente
 ### Variable Description
 
 #### Meta variables
-- `count`: Sequential numbering of responses  
 - `id`: Unique participant identifier  
 
 #### Scale variables
