@@ -26,8 +26,8 @@ This repo includes replication files for the CFA and LPA analysis in An Augmente
 ### Dataset Overview
 - **Source:** Directly collected by the authors.  
 - **Size:**  
-  - Final analytic sample: 253 participants (after missing data imputation)  
-  - Original survey respondents: 280 participants  
+  - Final analytic sample: 253 participants (after excluding participants who answered less than 70% of the questions.)  
+  - Original survey respondents: 279 participants  
 
 ---
 
