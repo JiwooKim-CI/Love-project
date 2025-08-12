@@ -12,128 +12,96 @@ This repo includes replication files for the CFA and LPA analysis in An Augmente
 
 ### Files
 
-- CFA_Rcode.R : R code for the Confirmatory Factor Analysis (CFA) conducted in this paper.
+- **CFA_Rcode.R**  
+  R code for the Confirmatory Factor Analysis (CFA) conducted in this paper.
 
-- LPA_Rcode.R : R code for the Latent Profile Analysis (LPA) conducted in this paper. This script uses the same dataset imputed in CFA_Rcode.R.
+- **LPA_Rcode.R**  
+  R code for the Latent Profile Analysis (LPA) conducted in this paper. This script uses the same dataset imputed in `CFA_Rcode.R`.
 
-- love_may.xls : Final dataset used in this study.
+- **love_may.xls**  
+  Final dataset used in this study.
+
+---
 
 ### Dataset Overview
-- Source: Directly collected by the authors.
-- Size:
+- **Source:** Directly collected by the authors.  
+- **Size:**  
+  - Final analytic sample: 253 participants (after missing data imputation)  
+  - Original survey respondents: 280 participants  
 
-  - Final analytic sample: 253 participants (after missing data imputation)
-
-  - Original survey respondents: 280 participants
+---
 
 ### Variable Description
 
 #### Meta variables
-
-- count: Sequential numbering of responses
-
-- id: Unique participant identifier
-
-- progress: Percentage of the questionnaire completed
+- `count`: Sequential numbering of responses  
+- `id`: Unique participant identifier  
+- `progress`: Percentage of the questionnaire completed  
 
 #### Scale variables
 
-- Sternberg’s Love Theory items
+**Sternberg’s Love Theory items**  
+- Variables starting with `a` or `b`  
+  - `a`: Current relationship  
+  - `b`: Ideal relationship  
+- First digit after the prefix indicates the subscale:  
+  - `1`: Intimacy (e.g., `a1-1`, `b1-3`)  
+  - `2`: Commitment  
+  - `3`: Passion  
 
-Variables starting with a or b
+**ATTEL scale items**  
+- Variables starting with `c` or `d`  
+  - `c`: Current relationship  
+  - `d`: Ideal relationship  
+- First digit after the prefix indicates the subscale:  
+  - `1`: Dependence  
+  - `2`: Independence  
+  - `3`: Constraints  
+  - `4`: Freedom  
+  - `5`: Lack of control  
+  - `6`: Control  
 
-a: Current relationship
+**Single-item relationship evaluations**  
+- `Q1`: How happy are you in your relationship with your partner (or a past relationship if you are not currently in one)?  
+- `Q276`: How satisfied are (or were) you with your relationship with your partner?  
+- `Q277`: How satisfied are (or were) you with your partner in your relationship?  
 
-b: Ideal relationship
+**Response scale (7-point Likert):**  
+1 = Extremely Dissatisfied  
+2 = Very Dissatisfied  
+3 = Somehow Dissatisfied  
+4 = Mixed  
+5 = Somewhat Satisfied  
+6 = Very Satisfied  
+7 = Extremely Satisfied  
 
-First digit after the prefix indicates the subscale:
+---
 
-1: Intimacy (e.g., a1-1, b1-3)
+### Demographic and relationship background variables
+- `Q265`: Age (numeric)  
+- `Q267`: Gender (Male / Female / Other / Prefer not to answer)  
+- `Q268`: Currently in a relationship? (Yes/No)  
+- `Q269`: Average duration of relationships  
+- `Q270`: Duration of longest relationship  
+- `Q271`: Duration of shortest relationship  
+- `Q272`: Number of relationships  
+- `Q273`: Participant’s definition of “having a relationship” (open-ended)  
+- `Q274`: Age at first relationship  
+- `Q275`: Ethnicity  
+  - Asian  
+  - Asian American  
+  - White or Caucasian  
+  - Black or African American  
+  - Hispanic or Latino  
+  - American Indian or Alaska Native  
+  - Two or more races  
+  - Other  
+  - Prefer not to answer  
 
-2: Commitment
+---
 
-3: Passion
+### Missing Data Handling
+- Missing values were imputed using the `missForest` package in R.
 
-- ATTEL scale items
-
-Variables starting with c or d
-
-c: Current relationship
-
-d: Ideal relationship
-
-First digit after the prefix indicates the subscale:
-
-1: Dependence
-
-2: Independence
-
-3: Constraints
-
-4: Freedom
-
-5: Lack of control
-
-6: Control
-
-- Single-item relationship evaluations
-
-Q1: How happy are you in your relationship with your partner (or a past relationship if you are not currently in one)?
-
-Q276: How satisfied are (or were) you with your relationship with your partner?
-
-Q277: How satisfied are (or were) you with your partner in your relationship?
-
-Response scale (7-point Likert):
-1 = Extremely Dissatisfied
-2 = Very Dissatisfied
-3 = Somehow Dissatisfied
-4 = Mixed
-5 = Somewhat Satisfied
-6 = Very Satisfied
-7 = Extremely Satisfied
-
-- Demographic and relationship background variables
-
-Q265: Age (numeric)
-
-Q267: Gender (Male / Female / Other / Prefer not to answer)
-
-Q268: Currently in a relationship? (Yes/No)
-
-Q269: Average duration of relationships
-
-Q270: Duration of longest relationship
-
-Q271: Duration of shortest relationship
-
-Q272: Number of relationships
-
-Q273: Participant’s definition of “having a relationship” (open-ended)
-
-Q274: Age at first relationship
-
-Q275: Ethnicity
-
-Asian
-
-Asian American
-
-White or Caucasian
-
-Black or African American
-
-Hispanic or Latino
-
-American Indian or Alaska Native
-
-Two or more races
-
-Other
-
-Prefer not to answer
-
-- Missing Data Handling
-Missing values were imputed using the missForest package in R.
 ## Reproducibility
 The analysis was conducted using R version 4.4.1. The full list of package versions can be found in [session_info.txt](session_info.txt).
