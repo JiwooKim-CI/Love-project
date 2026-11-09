@@ -1,24 +1,20 @@
+# First run the data preparation and imputation in CFA_Rcode.R.
 
 # -------------------------------
 # 1) Load packages
 # -------------------------------
 ## Load packages
 library(dplyr)
-library(readr)
-library(haven)
-library("lavaanPlot")
-library(moments)
-library(semPlot)
-library(lavaan)
-library(psy)
-library(semPlot)
-library(psych)
+library(tidyr)
+library(officer)
+library(flextable)
+
+
 library(ggplot2)
-library(knitr)
+
 library(tidyLPA)
-library(caret)
-library(mclust)  
-library(missForest)
+
+
 library(tikzDevice)
 library(emmeans)
 
@@ -26,13 +22,26 @@ library(emmeans)
 # 2) Data wrangling-use the same data from CFA imputation
 # -------------------------------
 
+# Keep participants in the same order. Retain ID, but do not use it to form profiles.
+if (!file.exists("analysis_data_imputed.rds"))
+  stop("First run the missForest imputation in script 1.")
+dat <- readRDS("analysis_data_imputed.rds")
+if (!"id" %in% names(dat)) stop("The data do not contain an id column.")
+a_scores <- paste0("a", 1:3, "_sum")
+b_scores <- paste0("b", 1:6, "_sum")
+d_scores <- paste0("d", 1:6, "_sum")
+set.seed(123)
+# Original labels: Sternberg=Very High/Upper Moderate/Lower Moderate/Very Low;
+# current=Unsettled/Stable/Autonomous/Traditional; difference=Similar/Intermediate difference/Huge difference.
+# Use Class 1, Class 2, etc., because profile numbers can change when models are fitted again.
+# The original labels are listed above. Check profile means before reusing these labels.
+
 # -------------------------------
 # 3) Sternberg's Love Theory (current)
 # -------------------------------
 ### Generate dataset - Sternberg's love theory (current relationship)
 
-love_tra <- dat[, grepl("^a", names(dat))]
-love_tra <- love_tra[,1:30]
+love_tra <- dat[, grep("^a[1-3](10|[1-9])$", names(dat), value = TRUE)]
 
 love_tra$id <- dat$id
 
@@ -51,22 +60,22 @@ love_new_imputed <- cbind(love_new_imputed,dat[,grep(c("^b6(10|[1-9])$"), names(
 love_new_merge <- data.frame(
   b1_sum = rowSums(love_new_imputed[, grep("^b1(10|[1-9])$", 
                                            names(love_new_imputed), 
-                                           value = TRUE)], na.rm = TRUE),
+                                           value = TRUE)], na.rm = FALSE),
   b2_sum = rowSums(love_new_imputed[, grep("^b2(10|[1-9])$", 
                                            names(love_new_imputed), 
-                                           value = TRUE)], na.rm = TRUE),
+                                           value = TRUE)], na.rm = FALSE),
   b3_sum = rowSums(love_new_imputed[, grep("^b3(10|[1-9])$", 
                                            names(love_new_imputed), 
-                                           value = TRUE)], na.rm = TRUE),
+                                           value = TRUE)], na.rm = FALSE),
   b4_sum = rowSums(love_new_imputed[, grep("^b4(10|[1-9])$", 
                                            names(love_new_imputed), 
-                                           value = TRUE)], na.rm = TRUE),
+                                           value = TRUE)], na.rm = FALSE),
   b5_sum = rowSums(love_new_imputed[, grep("^b5(10|[1-9])$", 
                                            names(love_new_imputed), 
-                                           value = TRUE)], na.rm = TRUE),
+                                           value = TRUE)], na.rm = FALSE),
   b6_sum = rowSums(love_new_imputed[, grep("^b6(10|[1-9])$", 
                                            names(love_new_imputed), 
-                                           value = TRUE)], na.rm = TRUE)
+                                           value = TRUE)], na.rm = FALSE)
 )
 
 love_new_merge$id <- dat$id
@@ -87,22 +96,22 @@ love_new_2_imputed$id <- dat$id
 love_new_ideal <- data.frame(
   d1_sum = rowSums(love_new_2_imputed[, grep("^d1(10|[1-9])$", 
                                              names(love_new_2_imputed), 
-                                             value = TRUE)], na.rm = TRUE),
+                                             value = TRUE)], na.rm = FALSE),
   d2_sum = rowSums(love_new_2_imputed[, grep("^d2(10|[1-9])$", 
                                              names(love_new_2_imputed), 
-                                             value = TRUE)], na.rm = TRUE),
+                                             value = TRUE)], na.rm = FALSE),
   d3_sum = rowSums(love_new_2_imputed[, grep("^d3(10|[1-9])$", 
                                              names(love_new_2_imputed), 
-                                             value = TRUE)], na.rm = TRUE),
+                                             value = TRUE)], na.rm = FALSE),
   d4_sum = rowSums(love_new_2_imputed[, grep("^d4(10|[1-9])$", 
                                              names(love_new_2_imputed), 
-                                             value = TRUE)], na.rm = TRUE),
+                                             value = TRUE)], na.rm = FALSE),
   d5_sum = rowSums(love_new_2_imputed[, grep("^d5(10|[1-9])$", 
                                              names(love_new_2_imputed), 
-                                             value = TRUE)], na.rm = TRUE),
+                                             value = TRUE)], na.rm = FALSE),
   d6_sum = rowSums(love_new_2_imputed[, grep("^d6(10|[1-9])$", 
                                              names(love_new_2_imputed), 
-                                             value = TRUE)], na.rm = TRUE)
+                                             value = TRUE)], na.rm = FALSE)
 )
 
 love_new_ideal$id <- dat$id
@@ -114,20 +123,20 @@ love_new_ideal$id <- dat$id
 ## LPA - Sternberg's theory (current relationship)
 love_tra_merge <- data.frame(
   a1_sum = rowSums(dat[, grep("^a1(10|[1-9])$", names(dat), 
-                              value = TRUE)], na.rm = TRUE),
+                              value = TRUE)], na.rm = FALSE),
   a2_sum = rowSums(dat[, grep("^a2(10|[1-9])$", names(dat), 
-                              value = TRUE)], na.rm = TRUE),
+                              value = TRUE)], na.rm = FALSE),
   a3_sum = rowSums(dat[, grep("^a3(10|[1-9])$", names(dat), 
-                              value = TRUE)], na.rm = TRUE))
+                              value = TRUE)], na.rm = FALSE))
 
-profiles_all_1 <- love_tra_merge |>
-  estimate_profiles(n_profiles = 1:6)
+if (anyNA(love_tra_merge)) stop("Some a subscale scores are still missing.")
+profiles_all_1 <- love_tra_merge[, a_scores, drop = FALSE] |>
+  estimate_profiles(n_profiles = 1:6, models = 1)
 profiles_all_1
 
-lpa1 <- love_tra_merge |>
-  estimate_profiles(n_profiles = 4, models = 1) ## profile number 4 turned out to be best fitting number for latent group
+lpa1 <- profiles_all_1[[4]] # Retain four profiles; review model fit before treating this as the preferred solution.
 
-love_tra_merge$class<-lpa1$model_1_class_4$model$classification
+love_tra_merge$class<-tidyLPA::get_data(lpa1)$Class
 
 # -------------------------------
 # 7) Summaries & plot (Sternberg)
@@ -135,10 +144,9 @@ love_tra_merge$class<-lpa1$model_1_class_4$model$classification
 # -------------------------------
 group_means <- love_tra_merge |>
   group_by(class)|>
-  summarise(across(everything(), mean, na.rm = TRUE))
+  summarise(across(matches("^[ab][1-6]_sum$"), ~ mean(.x)), .groups = "drop")
 
 print(group_means)
-library(tidyverse)
 
 group_means_long <- group_means %>%
   pivot_longer(
@@ -152,19 +160,20 @@ group_means_long$item <- factor(group_means_long$item,
                                 labels = c("Intimacy", "Commitment","Passion"))
 
 group_means_long$class <- factor(group_means_long$class,
-                                 levels = c(2, 4, 3, 1),
-                                 labels = c("Very High", "Upper Moderate", "Lower Moderate", "Very Low"))
+                                 levels = 1:4,
+                                 labels = paste("Class", 1:4))
 
 ### generate plot
 tikz("love_profiles_plot_tra.tex", width = 6, height = 4, standAlone = TRUE)
 
-ggplot(group_means_long, aes(x = item, y = mean_score, color = class, group = class)) +
+p_lpa <- ggplot(group_means_long, aes(x = item, y = mean_score, color = class, group = class)) +
   geom_line() +
   geom_point() +
   labs(x = "Subdimension", y = "Sum Score", color = "Profile") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+print(p_lpa)
 dev.off()
 
 # -------------------------------
@@ -174,34 +183,32 @@ dat$class_tra <- as.factor(love_tra_merge$class)
 
 ## predicting satisfaction
 #relationship
-model_rel <- lm(Q276 ~ class_tra, data = dat)
-emmeans(model_rel, ~ class_tra) |> summary() 
+model_relationship_tra <- lm(Q276 ~ class_tra, data = dat)
+emmeans(model_relationship_tra, ~ class_tra) |> summary() 
 #partner
-model_rel <- lm(Q277 ~ class_tra, data = dat)
-emmeans(model_rel, ~ class_tra) |> summary()
+model_partner_tra <- lm(Q277 ~ class_tra, data = dat)
+emmeans(model_partner_tra, ~ class_tra) |> summary()
 
 dat$class_tra_merge <- as.factor(love_tra_merge$class)
 
-lm(relationsatisfaction ~ class_tra_merge, data = dat) |>
+lm(Q276 ~ class_tra_merge, data = dat) |>
   summary()
-lm(partnersatisfaction ~ class_tra_merge, data = dat) |>
+lm(Q277 ~ class_tra_merge, data = dat) |>
   summary()
 
-group_means_long$item <- factor(group_means_long$item,
-                                levels = c("a1_sum", "a2_sum", "a3_sum"),
-                                labels = c("Intimacy", "Commitment","Passion"))
+# Item labels have already been assigned.
 
 dat$class_tra_merge <- factor(love_tra_merge$class,
-                              levels = c(2, 4, 3, 1),  
-                              labels = c("Very High", "Upper Moderate", "Lower Moderate", "Very Low"))
+                              levels = 1:4,  
+                              labels = paste("Class", 1:4))
 
 
 #relationship
-model_rel <- lm(Q276 ~ class_tra_merge, data = dat)
-emmeans(model_rel, ~ class_tra_merge) |> summary() 
+model_relationship_tra <- lm(Q276 ~ class_tra_merge, data = dat)
+emmeans(model_relationship_tra, ~ class_tra_merge) |> summary() 
 #partner
-model_rel <- lm(Q277 ~ class_tra_merge, data = dat)
-emmeans(model_rel, ~ class_tra_merge) |> summary()
+model_partner_tra <- lm(Q277 ~ class_tra_merge, data = dat)
+emmeans(model_partner_tra, ~ class_tra_merge) |> summary()
 
 # -------------------------------
 # 9) LPA - ATTEL (current)
@@ -210,20 +217,20 @@ emmeans(model_rel, ~ class_tra_merge) |> summary()
 ## LPA-ATTEL (current relationship)
 set.seed(123)
 
-profiles_all_2 <- love_new_merge |>
-  estimate_profiles(n_profiles = 2:5)
+if (anyNA(love_new_merge[, b_scores])) stop("Some b subscale scores are still missing.")
+profiles_all_2 <- love_new_merge[, b_scores, drop = FALSE] |>
+  estimate_profiles(n_profiles = 2:5, models = 1)
 profiles_all_2
 
-lpa2 <- love_new_merge[,-c(7,8)] |>
-  estimate_profiles(n_profiles = 4, models = 1)
-love_new_merge$class<-lpa2$model_1_class_4$model$classification
+lpa2 <- profiles_all_2[[3]] # Select the four-profile solution from the two- to five-profile models.
+love_new_merge$class<-tidyLPA::get_data(lpa2)$Class
 
 group_means <- love_new_merge |>
   group_by(class)|>
-  summarise(across(everything(), mean, na.rm = TRUE))|>
+  summarise(across(matches("^[ab][1-6]_sum$"), ~ mean(.x)), .groups = "drop")|>
   round(2)
 
-ft <- flextable(group_means[,1:7])
+ft <- flextable(group_means)
 
 doc <- read_docx()
 doc <- body_add_par(doc, "group", style = "heading 1")
@@ -232,7 +239,7 @@ doc <- body_add_flextable(doc, ft)
 print(doc, target = "lpa_new.docx")
 
 
-group_means_long <- group_means[,-8] %>%
+group_means_long <- group_means %>%
   pivot_longer(
     cols = -class,
     names_to = "item",
@@ -241,24 +248,25 @@ group_means_long <- group_means[,-8] %>%
 
 group_means_long$item <- factor(group_means_long$item,
                                 levels = c("b1_sum","b2_sum","b3_sum","b4_sum","b5_sum","b6_sum"),
-                                labels = c("Dependence","Independence","Constraint","Freedom","Control", "Lack of control"))
+                                labels = c("Dependence","Independence","Constraint","Freedom","Lack of Control", "Control"))
 
 group_means_long$class <- factor(group_means_long$class,
-                                 levels = c(3, 2, 1, 4),  
-                                 labels = c("Unsettled", "Stable", "Autonomous", "Traditional"))
+                                 levels = 1:4,  
+                                 labels = paste("Class", 1:4))
 
 tikz("love_profiles_plot.tex", width = 6, height = 4, standAlone = TRUE)
 
-ggplot(group_means_long, aes(x = item, y = mean_score, color = class, group = class)) +
+p_lpa <- ggplot(group_means_long, aes(x = item, y = mean_score, color = class, group = class)) +
   geom_line() +
   geom_point() +
   labs(x = "Subdimension", y = "Sum Score", color = "Profile") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+print(p_lpa)
 dev.off()
 
-ggplot(group_means_long, aes(x = item, y = mean_score, color = factor(class), 
+p_lpa <- ggplot(group_means_long, aes(x = item, y = mean_score, color = factor(class), 
                              group = class)) +
   geom_line() +
   geom_point() +
@@ -266,45 +274,47 @@ ggplot(group_means_long, aes(x = item, y = mean_score, color = factor(class),
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-love_new_merge$class<- factor(love_new_merge$class,
-                              levels = c(3, 2, 1, 4),  
-                              labels = c("Unsettled", "Stable", "Autonomous", "Traditional"))
+love_new_merge$class_label <- factor(love_new_merge$class,
+                              levels = 1:4,  
+                              labels = paste("Class", 1:4))
 
-dat$class_current <- as.factor(love_new_merge$class)
+dat$class_current <- love_new_merge$class_label
 
 #relationship
-model_rel <- lm(Q276 ~ class_current, data = dat)
-emmeans(model_rel, ~ class_current) |> summary() 
+model_relationship_current <- lm(Q276 ~ class_current, data = dat)
+emmeans(model_relationship_current, ~ class_current) |> summary() 
 #partner
-model_rel <- lm(Q277 ~ class_current, data = dat)
-emmeans(model_rel, ~ class_current) |> summary()
+model_partner_current <- lm(Q277 ~ class_current, data = dat)
+emmeans(model_partner_current, ~ class_current) |> summary()
 
 # -------------------------------
 # 10) LPA - ATTEL (difference score)
 #     - Compute (current - ideal), fit 3-class, label, plot, models
 # -------------------------------
 ## LPA-ATTEL (difference score)
-love_sub <- love_new_merge[,1:6]-love_new_ideal[,1:6]
+love_sub <- love_new_merge[, b_scores] - love_new_ideal[, d_scores]
 love_sub$id <- dat$id
 
-profiles_all_4 <- love_sub|>
-  estimate_profiles(n_profiles = 2:6)
+# Do not impute d items. Exclude participants with missing difference scores from this LPA only.
+diff_rows <- which(complete.cases(love_sub[, b_scores]))
+message("Participants excluded from the difference-score LPA: ", nrow(dat) - length(diff_rows))
+if (length(diff_rows) < 7L) stop("Too few participants have complete difference scores for this LPA.")
+love_sub <- love_sub[diff_rows, , drop = FALSE]
+profiles_all_4 <- love_sub[, b_scores, drop = FALSE] |>
+  estimate_profiles(n_profiles = 2:6, models = 1)
 profiles_all_4
 
-love_sub$id <- dat$id
-lpa4 <- love_sub[,-7] |>
-  estimate_profiles(n_profiles = 3, models = 1)
+lpa4 <- profiles_all_4[[2]] # Select the three-profile solution from the two- to six-profile models.
 
-love_sub$class<-lpa4$model_1_class_3$model$classification
+love_sub$class<-tidyLPA::get_data(lpa4)$Class
 
 group_means <- love_sub |>
   group_by(class)|>
-  summarise(across(everything(), mean, na.rm = TRUE))
+  summarise(across(matches("^[ab][1-6]_sum$"), ~ mean(.x)), .groups = "drop")
 
 print(group_means)
-library(tidyverse)
 
-group_means_long <- group_means[,-8] %>%
+group_means_long <- group_means %>%
   pivot_longer(
     cols = -class,
     names_to = "item",
@@ -313,32 +323,40 @@ group_means_long <- group_means[,-8] %>%
 
 group_means_long$item <- factor(group_means_long$item,
                                 levels = c("b1_sum","b2_sum","b3_sum","b4_sum","b5_sum","b6_sum"),
-                                labels = c("Dependence","Independence","Constraint","Freedom","Control", "Lack of control"))
+                                labels = c("Dependence","Independence","Constraint","Freedom","Lack of Control", "Control"))
 
 group_means_long$class <- factor(group_means_long$class,
-                                 levels = c(1, 3, 2), 
-                                 labels = c("Similar", "Intermediate difference", "Hugh difference"))
+                                 levels = 1:3, 
+                                 labels = paste("Class", 1:3))
 
 tikz("love_profiles_plot_diff.tex", width = 6, height = 4, standAlone = TRUE)
 
-ggplot(group_means_long, aes(x = item, y = -(mean_score), color = class, group = class)) +
+p_lpa <- ggplot(group_means_long, aes(x = item, y = -(mean_score), color = class, group = class)) +
   geom_line() +
   geom_point() +
-  labs(x = "Subdimension", y = "Sum Score", color = "Profile") +
+  labs(x = "Subdimension", y = "Ideal - Current (sum score)", color = "Profile") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+print(p_lpa)
 dev.off()
 
-love_new_merge$class<- factor(love_sub$class,
-                              levels = c(1,3,2),  
-                              labels = c("Similar", "Intermediate difference", "Hugh difference"))
+love_sub$class_label <- factor(love_sub$class,
+                              levels = 1:3,  
+                              labels = paste("Class", 1:3))
 
-dat$class_sub <- as.factor(love_new_merge$class)
+dat$class_sub <- factor(rep(NA_character_, nrow(dat)), levels = levels(love_sub$class_label))
+dat$class_sub[diff_rows] <- love_sub$class_label
 
 #relationship
-model_rel <- lm(Q276 ~ class_sub, data = dat)
-emmeans(model_rel, ~ class_sub) |> summary() 
+model_relationship_diff <- lm(Q276 ~ class_sub, data = dat)
+emmeans(model_relationship_diff, ~ class_sub) |> summary() 
 #partner
-model_rel_2 <- lm(Q277 ~ class_sub, data = dat)
-emmeans(model_rel_2, ~ class_sub) |> summary() 
+model_partner_diff <- lm(Q277 ~ class_sub, data = dat)
+emmeans(model_partner_diff, ~ class_sub) |> summary() 
+
+# Save the data, profile assignments, and fitted models for later use.
+saveRDS(list(data = dat, traditional = love_tra_merge, current = love_new_merge,
+             difference = love_sub, fits_traditional = profiles_all_1,
+             fits_current = profiles_all_2, fits_difference = profiles_all_4),
+        "LPA_results.rds")
